@@ -14,7 +14,6 @@ import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasValidation;
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.combobox.ComboBoxBase;
 import com.vaadin.flow.data.binder.HasDataProvider;
 import com.vaadin.flow.data.provider.CompositeDataGenerator;
 import com.vaadin.flow.data.provider.DataKeyMapper;
@@ -65,20 +64,24 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
         }
     }
 
-    private static <T> T presentationToModel(ComboBoxLight<T> select,
-            String presentation) {
-        if (!select.keyMapper.containsKey(presentation)) {
-            return null;
+    private static <T> T presentationToModel(ComboBoxLight<T> comboBox,
+                                             String presentation) {
+        DataKeyMapper<T> keyMapper = comboBox.getKeyMapper();
+
+        if (presentation == null || keyMapper == null) {
+            return comboBox.getEmptyValue();
         }
-        return select.keyMapper.get(presentation);
+        return keyMapper.get(presentation);
     }
 
-    private static <T> String modelToPresentation(ComboBoxLight<T> select,
-            T model) {
-        if (!select.keyMapper.has(model)) {
+    private static <T> String modelToPresentation(ComboBoxLight<T> comboBox,
+                                                  T model) {
+        DataKeyMapper<T> keyMapper = comboBox.getKeyMapper();
+
+        if (model == null || keyMapper == null) {
             return null;
         }
-        return select.keyMapper.key(model);
+        return keyMapper.key(model);
     }
 
     public ComboBoxLight() {

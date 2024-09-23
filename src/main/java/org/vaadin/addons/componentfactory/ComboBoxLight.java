@@ -244,7 +244,8 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
 
     @Override
     public void setDataProvider(DataProvider<T, ?> dataProvider) {
-        this.dataProvider = dataProvider;
+        this.dataProvider = Objects.requireNonNull(dataProvider, "Data provider must not be null");
+        keyMapper.setIdentifierGetter(dataProvider::getId); // same as DataCommunicator
 
         reset();
 
@@ -337,6 +338,7 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
     protected KeyMapper<T> getKeyMapper() {
         return keyMapper;
     }
+
     class ComboBoxLightRenderManager<T> implements Serializable {
 
         private final ComboBoxLight<T> comboBox;

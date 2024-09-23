@@ -96,7 +96,12 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
 
     private void updateSelectedKey() {
         // Send (possibly updated) key for the selected value
-        getElement().setProperty("value", getValue() != null ? keyMapper.key(getValue()) : "");
+        T value = getValue();
+
+        // when there is a value and the key mapper knows it, update the client, otherwise reset
+        getElement().setProperty("value", value != null && keyMapper.has(value)
+                ? keyMapper.key(value)
+                : "");
     }
 
     public void setItemLabelGenerator(

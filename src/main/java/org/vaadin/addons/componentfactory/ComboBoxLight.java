@@ -1,6 +1,13 @@
 package org.vaadin.addons.componentfactory;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import com.vaadin.flow.component.*;
+
 import com.vaadin.flow.data.binder.HasDataProvider;
 import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.data.renderer.Renderer;
@@ -10,12 +17,6 @@ import elemental.json.JsonArray;
 import elemental.json.JsonFactory;
 import elemental.json.JsonObject;
 import elemental.json.impl.JreJsonFactory;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
         implements HasSize, HasValidation, HasDataProvider<T>, HasHelper {
@@ -52,20 +53,24 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
         }
     }
 
-    private static <T> T presentationToModel(ComboBoxLight<T> select,
-            String presentation) {
-        if (!select.keyMapper.containsKey(presentation)) {
-            return null;
+    private static <T> T presentationToModel(ComboBoxLight<T> comboBox,
+                                             String presentation) {
+        DataKeyMapper<T> keyMapper = comboBox.getKeyMapper();
+
+        if (presentation == null || keyMapper == null) {
+            return comboBox.getEmptyValue();
         }
-        return select.keyMapper.get(presentation);
+        return keyMapper.get(presentation);
     }
 
-    private static <T> String modelToPresentation(ComboBoxLight<T> select,
-            T model) {
-        if (!select.keyMapper.has(model)) {
+    private static <T> String modelToPresentation(ComboBoxLight<T> comboBox,
+                                                  T model) {
+        DataKeyMapper<T> keyMapper = comboBox.getKeyMapper();
+
+        if (model == null || keyMapper == null) {
             return null;
         }
-        return select.keyMapper.key(model);
+        return keyMapper.key(model);
     }
 
     public ComboBoxLight() {

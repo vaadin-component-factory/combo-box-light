@@ -96,8 +96,7 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
 
     private void updateSelectedKey() {
         // Send (possibly updated) key for the selected value
-        getElement().executeJs("this._selectedKey=$0",
-                getValue() != null ? keyMapper.key(getValue()) : "");
+        getElement().setProperty("value", getValue() != null ? keyMapper.key(getValue()) : "");
     }
 
     public void setItemLabelGenerator(
@@ -130,6 +129,7 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
             jsonItems.set(i++, object);
         }
         getElement().setPropertyJson("items", jsonItems);
+        updateSelectedKey();
     }
 
     /**

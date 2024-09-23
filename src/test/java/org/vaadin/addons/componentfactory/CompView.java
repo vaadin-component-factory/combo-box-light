@@ -1,15 +1,12 @@
 package org.vaadin.addons.componentfactory;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.select.Select;
-import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.router.Route;
 
@@ -17,37 +14,66 @@ import com.vaadin.flow.router.Route;
 public class CompView extends VerticalLayout {
 
     public CompView() {
-        ComboBoxLight<Data> comboBox = new ComboBoxLight<Data>();
+        inMemory();
+    }
+
+    private void inMemory() {
+        ComboBoxLight<Data> comboBox = new ComboBoxLight<>();
         comboBox.setLabel("Values");
+
         List<Data> values = IntStream.range(0, 250)
-                .mapToObj(i -> new Data(i + " value"))
+                .mapToObj(Data::new)
                 .collect(Collectors.toList());
-        comboBox.setRenderer(
-                LitRenderer.<Data> of("<span style='color: var(--lumo-secondary-text-color);'><b>${item.value}</b></span>")
-                        .withProperty("value", d -> d.getValue()));
+
         comboBox.setItems(values);
-        comboBox.setItemLabelGenerator(Data::getValue);
-        comboBox.addValueChangeListener(e -> {
-            Notification.show(e.getValue().getValue());
-        });
-        comboBox.setValue(values.get(123));
+
+        initItemLabelGenerator(comboBox);
+
+        comboBox.setValue(new Data(123));
+        comboBox.addValueChangeListener(e -> Notification.show(asUserReadable(e.getValue())));
+
 
         add(comboBox);
     }
 
+    private static void initItemLabelGenerator(ComboBoxLight<Data> comboBox) {
+        comboBox.setItemLabelGenerator(item -> asUserReadable(item));
+    }
+
+    private static void initLitRenderer(ComboBoxLight<Data> comboBox) {
+        comboBox.setRenderer(
+                LitRenderer.<Data> of("<span style='color: var(--lumo-secondary-text-color);'>" +
+                                      "<b>${item.value}</b></span>")
+                        .withProperty("value", item -> asUserReadable(item)));
+    }
+
+    private static String asUserReadable(Data item) {
+        return "Item " + item.getId();
+    }
+
+
     public static class Data {
-        private String value;
+        private final int id;
 
-        public Data(String value) {
-            this.value = value;
+        public Data(int id) {
+            this.id = id;
         }
 
-        public String getValue() {
-            return value;
+        public int getId() {
+            return id;
         }
 
-        public void setValue(String value) {
-            this.value = value;
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            Data data = (Data) o;
+            return id == data.id;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hashCode(id);
         }
     }
 }

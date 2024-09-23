@@ -3,6 +3,7 @@ package org.vaadin.addons.componentfactory;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import com.vaadin.flow.data.provider.ListDataProvider;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -35,6 +36,16 @@ public class ComboBoxLightTest {
         // Should be the case, if setting a value auto registers the key
         Assert.assertTrue(light.getKeyMapper().containsKey("1"));
 
+    public void test_updateClientSideValueOnReset() {
+        ComboBoxLight<Entity> light = new ComboBoxLight<>();
+        light.setItems(TEST_ENTITY_ITEMS);
+        light.setValue(TEST_ENTITY);
+
+        // calls a reset and regenerates internal keys based on the key mapper
+        light.setItemLabelGenerator(item -> "Item " + item.getId());
+
+        String clientSideValue = light.getElement().getProperty("value");
+        Assert.assertTrue(light.getKeyMapper().containsKey(clientSideValue));
     }
 
     public void test_keyMapperUsesEqualsHashCode() {

@@ -47,7 +47,7 @@ public class CompView extends VerticalLayout {
     }
 
     private static String asUserReadable(Entity item) {
-        return "Item " + item.getId();
+        return item == null ? "" : "Item " + item.getId();
     }
 
 

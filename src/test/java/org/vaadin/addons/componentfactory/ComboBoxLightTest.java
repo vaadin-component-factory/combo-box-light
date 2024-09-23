@@ -20,8 +20,10 @@ public class ComboBoxLightTest {
     public static final Entity TEST_ENTITY = new Entity(1);
 
     @Test
-    public void test_preventDataProviderNPE() {
+    public void test_assureDpInitOnConstruction() {
         ComboBoxLight<Entity> light = new ComboBoxLight<>();
+
+        Assert.assertNotNull(light.getDataProvider());
 
         try {
             light.setItemLabelGenerator(item -> "unused");

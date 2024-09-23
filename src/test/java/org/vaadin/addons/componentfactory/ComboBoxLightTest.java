@@ -1,5 +1,6 @@
 package org.vaadin.addons.componentfactory;
 
+
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
 import com.vaadin.flow.data.provider.ListDataProvider;
@@ -24,6 +25,18 @@ public class ComboBoxLightTest {
     public static final Entity TEST_ENTITY = new Entity(1);
 
     @Test
+    public void test_assureDpInitOnConstruction() {
+        ComboBoxLight<Entity> light = new ComboBoxLight<>();
+
+        Assert.assertNotNull(light.getDataProvider());
+
+        try {
+            light.setItemLabelGenerator(item -> "unused");
+        } catch (NullPointerException e) {
+            Assert.fail("NullPointerException was thrown using setItemLabelGenerator");
+        }
+    }
+
     public void test_allowValueWhenNotInItems() throws Throwable {
         ComboBoxLight<Entity> light = new ComboBoxLight<>();
 

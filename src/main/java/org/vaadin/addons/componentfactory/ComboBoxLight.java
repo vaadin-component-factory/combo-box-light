@@ -6,10 +6,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import com.vaadin.flow.component.*;
-
 import com.vaadin.flow.data.binder.HasDataProvider;
 import com.vaadin.flow.data.provider.*;
+import com.vaadin.flow.data.provider.DataCommunicator.EmptyDataProvider;
+import com.vaadin.flow.component.*;
+
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.SerializableConsumer;
 import com.vaadin.flow.shared.Registration;
@@ -21,7 +22,7 @@ import elemental.json.impl.JreJsonFactory;
 public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
         implements HasSize, HasValidation, HasDataProvider<T>, HasHelper {
 
-    private DataProvider<T, ?> dataProvider;
+    private DataProvider<T, ?> dataProvider = new EmptyDataProvider<>();
     private Registration dataProviderListenerRegistration;
     private ItemLabelGenerator<T> itemLabelGenerator = String::valueOf;
     private final KeyMapper<T> keyMapper = new KeyMapper<>();

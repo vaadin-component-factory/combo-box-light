@@ -1,6 +1,7 @@
 package org.vaadin.addons.componentfactory;
 
 import com.vaadin.flow.data.provider.ListDataProvider;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -21,6 +22,18 @@ public class ComboBoxLightTest {
     public static final Entity TEST_ENTITY = new Entity(1);
 
     @Test
+    public void test_updateClientSideValueOnReset() {
+        ComboBoxLight<Entity> light = new ComboBoxLight<>();
+        light.setItems(TEST_ENTITY_ITEMS);
+        light.setValue(TEST_ENTITY);
+
+        // calls a reset and regenerates internal keys based on the key mapper
+        light.setItemLabelGenerator(item -> "Item " + item.getId());
+
+        String clientSideValue = light.getElement().getProperty("value");
+        Assert.assertTrue(light.getKeyMapper().containsKey(clientSideValue));
+    }
+
     public void test_keyMapperUsesEqualsHashCode() {
         ComboBoxLight<Entity> light = new ComboBoxLight<>();
         light.setItems(TEST_ENTITY_ITEMS);

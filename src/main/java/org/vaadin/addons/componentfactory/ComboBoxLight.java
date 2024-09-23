@@ -326,10 +326,17 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
     /**
      * Accesses the data generator managed by this controller
      */
-    CompositeDataGenerator<T> getDataGenerator() {
+    protected CompositeDataGenerator<T> getDataGenerator() {
         return dataGenerator;
     }
 
+    /**
+     * Returns the used key mapper. Please note, that any changes to this instance will affect the combo box.
+     * @return key mapper
+     */
+    protected KeyMapper<T> getKeyMapper() {
+        return keyMapper;
+    }
     class ComboBoxLightRenderManager<T> implements Serializable {
 
         private final ComboBoxLight<T> comboBox;

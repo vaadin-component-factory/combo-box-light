@@ -14,7 +14,7 @@ public class ComboBoxLightTest {
             .toList();
 
     public static final Data TEST_DATA = new Data(1);
-    public static final Data TEST_ENTITY = new Entity(1);
+    public static final Entity TEST_ENTITY = new Entity(1);
 
 
 }

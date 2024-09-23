@@ -1,34 +1,21 @@
 package org.vaadin.addons.componentfactory;
 
+import com.vaadin.flow.component.*;
+import com.vaadin.flow.data.binder.HasDataProvider;
+import com.vaadin.flow.data.provider.*;
+import com.vaadin.flow.data.renderer.Renderer;
+import com.vaadin.flow.function.SerializableConsumer;
+import com.vaadin.flow.shared.Registration;
+import elemental.json.JsonArray;
+import elemental.json.JsonFactory;
+import elemental.json.JsonObject;
+import elemental.json.impl.JreJsonFactory;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
-import com.vaadin.flow.component.AttachEvent;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.DetachEvent;
-import com.vaadin.flow.component.HasHelper;
-import com.vaadin.flow.component.HasSize;
-import com.vaadin.flow.component.HasValidation;
-import com.vaadin.flow.component.ItemLabelGenerator;
-import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.combobox.ComboBoxBase;
-import com.vaadin.flow.data.binder.HasDataProvider;
-import com.vaadin.flow.data.provider.CompositeDataGenerator;
-import com.vaadin.flow.data.provider.DataKeyMapper;
-import com.vaadin.flow.data.provider.DataProvider;
-import com.vaadin.flow.data.provider.KeyMapper;
-import com.vaadin.flow.data.provider.Query;
-import com.vaadin.flow.data.renderer.Renderer;
-import com.vaadin.flow.function.SerializableConsumer;
-import com.vaadin.flow.shared.Registration;
-
-import elemental.json.JsonArray;
-import elemental.json.JsonFactory;
-import elemental.json.JsonObject;
-import elemental.json.impl.JreJsonFactory;
 
 public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
         implements HasSize, HasValidation, HasDataProvider<T>, HasHelper {
@@ -389,9 +376,6 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
             renderingRegistrations.add(rendering.getRegistration());
 
             reset();
-            getElement().executeJs("this.value=$0",
-                    getValue() != null ? keyMapper.key(getValue()) : "");
-            
         }
     }
 

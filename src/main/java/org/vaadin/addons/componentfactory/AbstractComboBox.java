@@ -136,7 +136,7 @@ import elemental.json.JsonObject;
  * See the <a href="#/elements/vaadin-combo-box#property-dataProvider">
  * {@code dataProvider}</a> in the API reference below for the detailed data
  * provider arguments description, and the â€œLazy Loadingâ€œ example on
- * â€œBasicsâ€  page in the demos.
+ * â€œBasicsâ€ page in the demos.
  * </p>
  * <p>
  * <strong>Note that when using function data providers, the total number of

@@ -6,7 +6,7 @@
 
     <groupId>org.vaadin.addons.componentfactory</groupId>
     <artifactId>combo-box-light</artifactId>
-    <version>1.0.1</version>
+    <version>2.0.0</version>
     <name>Light ComboBox</name>
     <description>Light ComboBox</description>
 

@@ -1,19 +1,18 @@
 # Light ComboBox project
 
-Light version of ComboBox for Vaadin 23 based on existing web components of Vaadin 23. This version of the ComboBox specifically has been simplified by removal of client - server lazyloading mechanism. The benefit of this is that with small datasets of options faster response time of ComboBox opening is achieved. The component however is not suitable when dataset of options is larger.  The Java API is reduced version of the Vaadin 24 ComboBox due removal of some features. Also this removal of lazy loading makes it possible to have scroll to selected item working all the time.
+Light version of ComboBox for Vaadin 24 based on existing web components of Vaadin 24. This version of the ComboBox specifically has been simplified by removal of client - server lazyloading mechanism. The benefit of this is that with small datasets of options faster response time of ComboBox opening is achieved. The component however is not suitable when dataset of options is larger.  The Java API is reduced version of the Vaadin 24 ComboBox due removal of some features. Also this removal of lazy loading makes it possible to have scroll to selected item working all the time.
 
 ## Development instructions
 
 ### Important Files 
 * ComboBoxLight.java: this is the addon-on component class.
 * CompView.java: A View class that let's you test the component you are building. 
-* src/main/resources/META-INF/resources/frontend/src contains actual web component, mostly copied from Vaadin 23. 
 
 ### Deployment
 
 Starting the test/demo server:
 ```
-mvn jetty:run
+mvn -Pjetty jetty:run
 ```
 
 This deploys demo at http://localhost:8080/light

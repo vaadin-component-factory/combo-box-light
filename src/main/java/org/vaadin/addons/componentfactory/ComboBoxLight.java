@@ -55,7 +55,7 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
     }
 
     private static <T> T presentationToModel(ComboBoxLight<T> comboBox,
-                                             String presentation) {
+            String presentation) {
         DataKeyMapper<T> keyMapper = comboBox.getKeyMapper();
 
         if (presentation == null || keyMapper == null) {
@@ -65,7 +65,7 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
     }
 
     private static <T> String modelToPresentation(ComboBoxLight<T> comboBox,
-                                                  T model) {
+            T model) {
         DataKeyMapper<T> keyMapper = comboBox.getKeyMapper();
 
         if (model == null || keyMapper == null) {
@@ -91,10 +91,11 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
         // Send (possibly updated) key for the selected value
         T value = getValue();
 
-        // when there is a value and the key mapper knows it, update the client, otherwise reset
-        getElement().setProperty("value", value != null && keyMapper.has(value)
-                ? keyMapper.key(value)
-                : "");
+        // when there is a value and the key mapper knows it, update the client,
+        // otherwise reset
+        getElement().setProperty("value",
+                value != null && keyMapper.has(value) ? keyMapper.key(value)
+                        : "");
     }
 
     public void setItemLabelGenerator(
@@ -242,8 +243,10 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
 
     @Override
     public void setDataProvider(DataProvider<T, ?> dataProvider) {
-        this.dataProvider = Objects.requireNonNull(dataProvider, "Data provider must not be null");
-        keyMapper.setIdentifierGetter(dataProvider::getId); // same as DataCommunicator
+        this.dataProvider = Objects.requireNonNull(dataProvider,
+                "Data provider must not be null");
+        keyMapper.setIdentifierGetter(dataProvider::getId); // same as
+                                                            // DataCommunicator
 
         reset();
 
@@ -330,7 +333,9 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
     }
 
     /**
-     * Returns the used key mapper. Please note, that any changes to this instance will affect the combo box.
+     * Returns the used key mapper. Please note, that any changes to this
+     * instance will affect the combo box.
+     * 
      * @return key mapper
      */
     protected KeyMapper<T> getKeyMapper() {

@@ -31,7 +31,6 @@ public class CompView extends VerticalLayout {
         comboBox.setValue(new Entity(123));
         comboBox.addValueChangeListener(e -> Notification.show(asUserReadable(e.getValue())));
 
-
         add(comboBox);
     }
 

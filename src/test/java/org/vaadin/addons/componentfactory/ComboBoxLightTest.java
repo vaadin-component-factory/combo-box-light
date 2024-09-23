@@ -2,6 +2,7 @@ package org.vaadin.addons.componentfactory;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.commons.lang3.reflect.MethodUtils;
+import com.vaadin.flow.data.provider.ListDataProvider;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -36,4 +37,25 @@ public class ComboBoxLightTest {
 
     }
 
+    public void test_keyMapperUsesEqualsHashCode() {
+        ComboBoxLight<Entity> light = new ComboBoxLight<>();
+        light.setItems(TEST_ENTITY_ITEMS);
+
+        Assert.assertTrue(light.getKeyMapper().has(TEST_ENTITY));
+    }
+
+    @Test
+    public void test_keyMapperUsesDataProviderGetId() {
+        ComboBoxLight<Data> light = new ComboBoxLight<>();
+        ListDataProvider<Data> dataProvider = new ListDataProvider<>(TEST_DATA_ITEMS) {
+            @Override
+            public Object getId(Data item) {
+                return item != null ? item.getId() : null;
+            }
+        };
+
+        light.setDataProvider(dataProvider);
+
+        Assert.assertTrue(light.getKeyMapper().has(TEST_DATA));
+    }
 }

@@ -1,18 +1,28 @@
 package org.vaadin.addons.componentfactory;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.provider.DataProvider;
 import com.vaadin.flow.data.renderer.LitRenderer;
 import com.vaadin.flow.router.Route;
 
-@Route("light")
-public class CompView extends VerticalLayout {
+@Route("backend")
+public class BackendView extends VerticalLayout {
 
-    public CompView() {
+    List<Entity> values = Stream.iterate(0, i -> i + 1)
+            .limit(250)
+            .map(i -> new Entity(i, "Name " + i))
+            .toList();
+    DataProvider<Entity, String> dataProvider = DataProvider.fromFilteringCallbacks(
+            query -> values.stream()
+                    .filter(entity -> entity.getName().contains(query.getFilter().orElse("XXX"))),
+            query -> (int) values.stream()
+                    .filter(entity -> entity.getName().contains(query.getFilter().orElse("XXX"))).count());
+
+    public BackendView() {
         inMemory();
     }
 
@@ -20,11 +30,7 @@ public class CompView extends VerticalLayout {
         ComboBoxLight<Entity> comboBox = new ComboBoxLight<>();
         comboBox.setLabel("Values");
 
-        List<Entity> values = IntStream.range(0, 250)
-                .mapToObj(i -> new Entity(i, "Name " + i))
-                .collect(Collectors.toList());
-
-        comboBox.setItems(values);
+        comboBox.setDataProvider(dataProvider);
 
         initItemLabelGenerator(comboBox);
 
@@ -49,5 +55,5 @@ public class CompView extends VerticalLayout {
         return item == null ? "" : item.getName();
     }
 
-
 }
+

@@ -17,6 +17,7 @@
     "construct-style-sheets-polyfill": "3.1.0",
     "date-fns": "2.29.3",
     "lit": "3.1.4",
+    "no-name": "file:",
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-router-dom": "6.26.2"
@@ -82,7 +83,7 @@
       "workbox-core": "7.1.0",
       "workbox-precaching": "7.1.0"
     },
-    "hash": "a8e10e00d4bde9309f0b39e206b4c22bf37b6692e17bbad65377f0ba1a76e036"
+    "hash": "f918afe2aa0076eed817765000256c2917623d67ac61922509fec3ed08689daa"
   },
   "type": "module",
   "overrides": {

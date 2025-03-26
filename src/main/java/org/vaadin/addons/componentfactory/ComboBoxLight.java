@@ -85,6 +85,11 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
         super.addCustomValueSetListener(e -> this.getElement()
                 .setProperty(PROP_INPUT_ELEMENT_VALUE, e.getDetail()));
         super.addValueChangeListener(e -> updateSelectedKey());
+        addFilterChangeListener(e -> {
+            if(getDataProvider() instanceof BackEndDataProvider) {
+                reset();
+            }
+        });
     }
 
     private void updateSelectedKey() {
@@ -113,7 +118,15 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
     private void reset() {
         keyMapper.removeAll();
         dataGenerator.destroyAllData();
-        List<String> items = getDataProvider().fetch(new Query<>())
+        var filter = getFilterString();
+        Query<T, String> query;
+        DataProvider<T, String> dataProvider = (DataProvider<T, String>) getDataProvider();
+        if (filter == null || filter.trim().isEmpty()) {
+            query = new Query<T, String>();
+        } else {
+            query = new Query<T, String>(filter.trim());
+        }
+        List<String> items = dataProvider.fetch(query)
                 .map(item -> keyMapper.key(item)).collect(Collectors.toList());
 
         JsonFactory factory = new JreJsonFactory();

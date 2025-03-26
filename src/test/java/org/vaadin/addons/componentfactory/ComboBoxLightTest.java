@@ -16,10 +16,10 @@ public class ComboBoxLightTest {
             .mapToObj(Data::new).toList();
 
     private static final List<Entity> TEST_ENTITY_ITEMS = IntStream.range(0, 3)
-            .mapToObj(Entity::new).toList();
+            .mapToObj(i -> new Entity(i, "Name " + i)).toList();
 
     public static final Data TEST_DATA = new Data(1);
-    public static final Entity TEST_ENTITY = new Entity(1);
+    public static final Entity TEST_ENTITY = new Entity(1, "Name 1");
 
     @Test
     public void test_assureDpInitOnConstruction() {

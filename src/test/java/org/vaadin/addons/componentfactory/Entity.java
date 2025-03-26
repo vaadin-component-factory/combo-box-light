@@ -6,16 +6,30 @@ import java.util.Objects;
  * Extends Data to provide equals/hashcode impl.
  */
 public class Entity extends Data {
-    public Entity(int id) {
+
+    private String name;
+
+    public Entity(Integer id, String name) {
         super(id);
+        this.name = name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getName() {
+        return name;
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Data data = (Data) o;
-        return getId() == data.getId();
+        return Objects.equals(getId(), data.getId());
     }
 
     @Override

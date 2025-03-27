@@ -1,6 +1,7 @@
 package org.vaadin.addons.componentfactory;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -86,8 +87,10 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
                 .setProperty(PROP_INPUT_ELEMENT_VALUE, e.getDetail()));
         super.addValueChangeListener(e -> updateSelectedKey());
         addFilterChangeListener(e -> {
-            if(getDataProvider() instanceof BackEndDataProvider) {
-                reset();
+            if (e.isFromClient() && e.getFilter() != null && !e.getFilter().isEmpty()) {
+                if (getDataProvider() instanceof BackEndDataProvider) {
+                    reset();
+                }
             }
         });
     }
@@ -118,7 +121,7 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
     private void reset() {
         keyMapper.removeAll();
         dataGenerator.destroyAllData();
-        var filter = getFilterString();
+        String filter = getFilterString();
         Query<T, String> query;
         DataProvider<T, String> dataProvider = (DataProvider<T, String>) getDataProvider();
         if (filter == null || filter.trim().isEmpty()) {
@@ -141,7 +144,24 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
             jsonItems.set(i++, object);
         }
         getElement().setPropertyJson("items", jsonItems);
-        updateSelectedKey();
+
+        if (dataProvider instanceof BackEndDataProvider && items.size() == 1) {
+            // if there is only one item, we can set the value directly
+            String key = items.get(0);
+            T item = keyMapper.get(key);
+            if (item != null) {
+                setModelValue(item, true);
+            }
+        }
+
+        if (dataProvider instanceof BackEndDataProvider) {
+            setFilter(filter);
+        }
+
+        if (!(dataProvider instanceof BackEndDataProvider)) {
+            updateSelectedKey();
+        }
+
     }
 
     /**
@@ -150,8 +170,8 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
      * Up or Down arrow keys.
      *
      * @param autoOpen
-     *            {@code false} to prevent the dropdown from opening
-     *            automatically
+     *                 {@code false} to prevent the dropdown from opening
+     *                 automatically
      */
     public void setAutoOpen(boolean autoOpen) {
         getElement().setProperty(PROP_AUTO_OPEN_DISABLED, !autoOpen);
@@ -324,13 +344,13 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
      * {@link #setItemLabelGenerator(ItemLabelGenerator)}.
      *
      * @param renderer
-     *            a renderer for the items in the selection list of the
-     *            ComboBox, not <code>null</code>
-     *            <p>
-     *            Note that filtering of the ComboBox is not affected by the
-     *            renderer that is set here. Filtering is done on the original
-     *            values and can be affected by
-     *            {@link #setItemLabelGenerator(ItemLabelGenerator)}.
+     *                 a renderer for the items in the selection list of the
+     *                 ComboBox, not <code>null</code>
+     *                 <p>
+     *                 Note that filtering of the ComboBox is not affected by the
+     *                 renderer that is set here. Filtering is done on the original
+     *                 values and can be affected by
+     *                 {@link #setItemLabelGenerator(ItemLabelGenerator)}.
      */
     public void setRenderer(Renderer<T> renderer) {
         Objects.requireNonNull(renderer, "The renderer must not be null");

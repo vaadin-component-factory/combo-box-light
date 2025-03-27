@@ -18,9 +18,10 @@ public class BackendView extends VerticalLayout {
             .toList();
     DataProvider<Entity, String> dataProvider = DataProvider.fromFilteringCallbacks(
             query -> values.stream()
-                    .filter(entity -> entity.getName().contains(query.getFilter().orElse("XXX"))),
+                    .filter(entity -> entity.getName().contains(query.getFilter().orElse("")))
+                    .limit(20),
             query -> (int) values.stream()
-                    .filter(entity -> entity.getName().contains(query.getFilter().orElse("XXX"))).count());
+                    .filter(entity -> entity.getName().contains(query.getFilter().orElse(""))).limit(20).count());
 
     public BackendView() {
         inMemory();
@@ -35,7 +36,7 @@ public class BackendView extends VerticalLayout {
         initItemLabelGenerator(comboBox);
 
         comboBox.setValue(new Entity(123, "Name 123"));
-        comboBox.addValueChangeListener(e -> Notification.show(asUserReadable(e.getValue())));
+        comboBox.addValueChangeListener(e -> {if (e.isFromClient()) Notification.show(asUserReadable(e.getValue()));});
 
         add(comboBox);
     }

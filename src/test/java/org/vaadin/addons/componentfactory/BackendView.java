@@ -3,6 +3,7 @@ package org.vaadin.addons.componentfactory;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.DataProvider;
@@ -24,10 +25,10 @@ public class BackendView extends VerticalLayout {
                     .filter(entity -> entity.getName().contains(query.getFilter().orElse(""))).limit(20).count());
 
     public BackendView() {
-        inMemory();
+        backend();
     }
 
-    private void inMemory() {
+    private void backend() {
         ComboBoxLight<Entity> comboBox = new ComboBoxLight<>();
         comboBox.setLabel("Values");
 
@@ -36,9 +37,19 @@ public class BackendView extends VerticalLayout {
         initItemLabelGenerator(comboBox);
 
         comboBox.setValue(new Entity(123, "Name 123"));
-        comboBox.addValueChangeListener(e -> {if (e.isFromClient()) Notification.show(asUserReadable(e.getValue()));});
+        comboBox.addValueChangeListener(e -> {
+            if (e.isFromClient())
+                Notification.show(asUserReadable(e.getValue()));
+        });
 
-        add(comboBox);
+        Checkbox checkbox = new Checkbox("Autoselect", true);
+        checkbox.addValueChangeListener(e -> {
+            if (e.isFromClient()) {
+                comboBox.setDisableBackendAutoselect(!e.getValue());
+            }
+        });
+
+        add(comboBox, checkbox);
     }
 
     private static void initItemLabelGenerator(ComboBoxLight<Entity> comboBox) {
@@ -47,8 +58,8 @@ public class BackendView extends VerticalLayout {
 
     private static void initLitRenderer(ComboBoxLight<Entity> comboBox) {
         comboBox.setRenderer(
-                LitRenderer.<Entity> of("<span style='color: var(--lumo-secondary-text-color);'>" +
-                                      "<b>${item.value}</b></span>")
+                LitRenderer.<Entity>of("<span style='color: var(--lumo-secondary-text-color);'>" +
+                        "<b>${item.value}</b></span>")
                         .withProperty("value", item -> asUserReadable(item)));
     }
 
@@ -57,4 +68,3 @@ public class BackendView extends VerticalLayout {
     }
 
 }
-

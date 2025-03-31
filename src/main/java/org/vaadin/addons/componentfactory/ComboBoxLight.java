@@ -32,6 +32,7 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
     private int customValueListenersCount;
     private ComboBoxLightRenderManager<T> renderManager;
     private final CompositeDataGenerator<T> dataGenerator = new CompositeDataGenerator<>();
+    private boolean autoselect = true;
 
     private class CustomValueRegistration implements Registration {
 
@@ -145,7 +146,7 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
         }
         getElement().setPropertyJson("items", jsonItems);
 
-        if (dataProvider instanceof BackEndDataProvider && items.size() == 1) {
+        if (autoselect && dataProvider instanceof BackEndDataProvider && items.size() == 1) {
             // if there is only one item, we can set the value directly
             String key = items.get(0);
             T item = keyMapper.get(key);
@@ -356,6 +357,18 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
         Objects.requireNonNull(renderer, "The renderer must not be null");
 
         renderManager.setRenderer(renderer);
+    }
+
+
+    /**
+     * Sets whether to disable the backend dataprovider autoselect feature.
+     * When disabled, the autoselect functionality will not be triggered.
+     *
+     * @param disableBackendAutoslect {@code true} to disable backend autoselect, 
+     *                                {@code false} to enable it.
+     */
+    public void setDisableBackendAutoselect(boolean disableBackendAutoslect) {
+        autoselect = !disableBackendAutoslect;
     }
 
     /**

@@ -41,7 +41,8 @@ public class BackendView extends VerticalLayout {
             if (e.isFromClient())
                 Notification.show(asUserReadable(e.getValue()));
         });
-
+        comboBox.setClearButtonVisible(true);
+        
         Checkbox checkbox = new Checkbox("Autoselect", true);
         checkbox.addValueChangeListener(e -> {
             if (e.isFromClient()) {

@@ -94,6 +94,12 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
                 }
             }
         });
+        addValueChangeListener(e -> {
+            if (e.getValue() == null) {
+                setFilter("");
+                reset();
+            }
+        });
     }
 
     private void updateSelectedKey() {
@@ -359,12 +365,11 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
         renderManager.setRenderer(renderer);
     }
 
-
     /**
      * Sets whether to disable the backend dataprovider autoselect feature.
      * When disabled, the autoselect functionality will not be triggered.
      *
-     * @param disableBackendAutoslect {@code true} to disable backend autoselect, 
+     * @param disableBackendAutoslect {@code true} to disable backend autoselect,
      *                                {@code false} to enable it.
      */
     public void setDisableBackendAutoselect(boolean disableBackendAutoslect) {

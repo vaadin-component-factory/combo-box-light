@@ -36,4 +36,12 @@ public class Entity extends Data {
     public int hashCode() {
         return Objects.hashCode(getId());
     }
+
+    @Override
+    public String toString() {
+        return "Entity{" +
+                "id=" + getId() +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }

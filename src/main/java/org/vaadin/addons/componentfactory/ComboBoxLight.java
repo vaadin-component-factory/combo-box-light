@@ -1,11 +1,9 @@
 package org.vaadin.addons.componentfactory;
 
 import java.io.Serializable;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import com.vaadin.flow.data.binder.HasDataProvider;
 import com.vaadin.flow.data.provider.*;
@@ -33,6 +31,7 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
     private ComboBoxLightRenderManager<T> renderManager;
     private final CompositeDataGenerator<T> dataGenerator = new CompositeDataGenerator<>();
     private boolean autoselect = true;
+    private boolean resetAfterChange = true;
 
     private class CustomValueRegistration implements Registration {
 
@@ -88,16 +87,26 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
                 .setProperty(PROP_INPUT_ELEMENT_VALUE, e.getDetail()));
         super.addValueChangeListener(e -> updateSelectedKey());
         addFilterChangeListener(e -> {
-            if (e.isFromClient() && e.getFilter() != null && !e.getFilter().isEmpty()) {
-                if (getDataProvider() instanceof BackEndDataProvider) {
-                    reset();
-                }
+            if (e.isFromClient() && e.getFilter() != null
+                    && !e.getFilter().isEmpty() 
+                    && getDataProvider() instanceof BackEndDataProvider) {
+                reset();
             }
         });
         addValueChangeListener(e -> {
-            if (e.getValue() == null) {
+            if (!resetAfterChange || !e.isFromClient()) {
+                return;
+            }
+            if (dataProvider instanceof BackEndDataProvider) {
                 setFilter("");
                 reset();
+                if (e.getValue() == null) {
+                    return;
+                }
+                if (keyMapper.has(e.getValue())) {
+                    getElement().executeJs("return 0;")
+                            .then(res -> updateSelectedKey());
+                }
             }
         });
     }
@@ -125,6 +134,7 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
         return itemLabelGenerator;
     }
 
+    @SuppressWarnings("unchecked")
     private void reset() {
         keyMapper.removeAll();
         dataGenerator.destroyAllData();
@@ -132,12 +142,12 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
         Query<T, String> query;
         DataProvider<T, String> dataProvider = (DataProvider<T, String>) getDataProvider();
         if (filter == null || filter.trim().isEmpty()) {
-            query = new Query<T, String>();
+            query = new Query<>();
         } else {
-            query = new Query<T, String>(filter.trim());
+            query = new Query<>(filter.trim());
         }
         List<String> items = dataProvider.fetch(query)
-                .map(item -> keyMapper.key(item)).collect(Collectors.toList());
+                .map(keyMapper::key).toList();
 
         JsonFactory factory = new JreJsonFactory();
         JsonArray jsonItems = factory.createArray();
@@ -168,7 +178,7 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
         if (!(dataProvider instanceof BackEndDataProvider)) {
             updateSelectedKey();
         }
-
+  
     }
 
     /**
@@ -299,9 +309,7 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
             dataProviderListenerRegistration.remove();
         }
         dataProviderListenerRegistration = dataProvider
-                .addDataProviderListener(event -> {
-                    reset();
-                });
+                .addDataProviderListener(event -> reset());
     }
 
     @Override
@@ -377,6 +385,17 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
     }
 
     /**
+     * Sets whether the reset behavior after a change should be disabled when using backend dataprovider.
+     * When set to {@code true}, the component will not reset its state after a value change.
+     * When set to {@code false}, the component will reset its state after a value change.
+     *
+     * @param disableResetAfterChange {@code true} to disable reset after change, {@code false} to enable it.
+     */
+    public void setDisableResetAfterChange(boolean disableResetAfterChange) {
+        resetAfterChange = !disableResetAfterChange;
+    }
+
+    /**
      * Accesses the data generator managed by this controller
      */
     protected CompositeDataGenerator<T> getDataGenerator() {
@@ -423,6 +442,7 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
             });
         }
 
+        @SuppressWarnings("unchecked")
         private void render() {
             renderingRegistrations.forEach(Registration::remove);
             renderingRegistrations.clear();

@@ -3,6 +3,7 @@ package org.vaadin.addons.componentfactory;
 import java.util.List;
 import java.util.stream.Stream;
 
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -43,18 +44,33 @@ public class BackendView extends VerticalLayout {
         });
         comboBox.setClearButtonVisible(true);
         
-        Checkbox checkbox = new Checkbox("Autoselect", true);
-        checkbox.addValueChangeListener(e -> {
+        Checkbox checkbox1 = new Checkbox("Autoselect", true);
+        checkbox1.addValueChangeListener(e -> {
             if (e.isFromClient()) {
                 comboBox.setDisableBackendAutoselect(!e.getValue());
             }
         });
 
-        add(comboBox, checkbox);
+        Checkbox checkbox2 = new Checkbox("Reset", true);
+        checkbox2.addValueChangeListener(e -> {
+            if (e.isFromClient()) {
+                comboBox.setDisableResetAfterChange(!e.getValue());
+            }
+        });
+
+        Button button = new Button("Value", event -> {
+            if (comboBox.getValue() != null) {
+                Notification.show("Value: " + comboBox.getValue().getName());
+            } else {
+                Notification.show("No value selected");
+            }
+        });
+ 
+        add(comboBox, checkbox1, checkbox2, button);
     }
 
     private static void initItemLabelGenerator(ComboBoxLight<Entity> comboBox) {
-        comboBox.setItemLabelGenerator(item -> asUserReadable(item));
+        comboBox.setItemLabelGenerator(BackendView::asUserReadable);
     }
 
     private static void initLitRenderer(ComboBoxLight<Entity> comboBox) {

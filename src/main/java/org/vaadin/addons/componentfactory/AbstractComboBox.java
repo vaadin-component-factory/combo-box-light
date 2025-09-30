@@ -1,5 +1,7 @@
 package org.vaadin.addons.componentfactory;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vaadin.flow.component.AbstractSinglePropertyField;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEvent;
@@ -18,8 +20,6 @@ import com.vaadin.flow.function.SerializableBiFunction;
 import com.vaadin.flow.function.SerializableFunction;
 import com.vaadin.flow.shared.Registration;
 
-import elemental.json.JsonArray;
-import elemental.json.JsonObject;
 
 /**
  * <p>
@@ -459,8 +459,8 @@ public abstract class AbstractComboBox<R extends AbstractComboBox<R, T>, T>
      *
      * @return the {@code items} property from the webcomponent
      */
-    protected JsonArray getItemsJsonArray() {
-        return (JsonArray) getElement().getPropertyRaw("items");
+    protected ArrayNode getItemsJsonArray() {
+        return (ArrayNode) getElement().getPropertyRaw("items");
     }
 
     /**
@@ -473,9 +473,9 @@ public abstract class AbstractComboBox<R extends AbstractComboBox<R, T>, T>
      * </p>
      *
      * @param items
-     *            the JsonArray value to set
+     *            the ArrayNode value to set
      */
-    protected void setItems(JsonArray items) {
+    protected void setItems(ArrayNode items) {
         getElement().setPropertyJson("items", items);
     }
 
@@ -532,8 +532,8 @@ public abstract class AbstractComboBox<R extends AbstractComboBox<R, T>, T>
      *
      * @return the {@code filteredItems} property from the webcomponent
      */
-    protected JsonArray getFilteredItemsJsonArray() {
-        return (JsonArray) getElement().getPropertyRaw("filteredItems");
+    protected ArrayNode getFilteredItemsJsonArray() {
+        return (ArrayNode) getElement().getPropertyRaw("filteredItems");
     }
 
     /**
@@ -547,9 +547,9 @@ public abstract class AbstractComboBox<R extends AbstractComboBox<R, T>, T>
      * </p>
      *
      * @param filteredItems
-     *            the JsonArray value to set
+     *            the ArrayNode value to set
      */
-    protected void setFilteredItems(JsonArray filteredItems) {
+    protected void setFilteredItems(ArrayNode filteredItems) {
         getElement().setPropertyJson("filteredItems", filteredItems);
     }
 
@@ -634,8 +634,8 @@ public abstract class AbstractComboBox<R extends AbstractComboBox<R, T>, T>
      * @return the {@code selectedItem} property from the webcomponent
      */
     @Synchronize(property = "selectedItem", value = "selected-item-changed")
-    protected JsonObject getSelectedItemJsonObject() {
-        return (JsonObject) getElement().getPropertyRaw("selectedItem");
+    protected ObjectNode getSelectedItemJsonObject() {
+        return (ObjectNode) getElement().getPropertyRaw("selectedItem");
     }
 
     /**
@@ -647,9 +647,9 @@ public abstract class AbstractComboBox<R extends AbstractComboBox<R, T>, T>
      * </p>
      *
      * @param selectedItem
-     *            the JsonObject value to set
+     *            the ObjectNode value to set
      */
-    protected void setSelectedItem(JsonObject selectedItem) {
+    protected void setSelectedItem(ObjectNode selectedItem) {
         getElement().setPropertyJson("selectedItem", selectedItem);
     }
 
@@ -1165,14 +1165,14 @@ public abstract class AbstractComboBox<R extends AbstractComboBox<R, T>, T>
 
     public static class SelectedItemChangeEvent<R extends AbstractComboBox<R, ?>>
             extends ComponentEvent<R> {
-        private final JsonObject selectedItem;
+        private final ObjectNode selectedItem;
 
         public SelectedItemChangeEvent(R source, boolean fromClient) {
             super(source, fromClient);
             this.selectedItem = source.getSelectedItemJsonObject();
         }
 
-        public JsonObject getSelectedItem() {
+        public ObjectNode getSelectedItem() {
             return selectedItem;
         }
     }

@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vaadin.flow.data.binder.HasDataProvider;
 import com.vaadin.flow.data.provider.*;
 import com.vaadin.flow.data.provider.DataCommunicator.EmptyDataProvider;
@@ -13,10 +16,6 @@ import com.vaadin.flow.component.*;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.SerializableConsumer;
 import com.vaadin.flow.shared.Registration;
-import elemental.json.JsonArray;
-import elemental.json.JsonFactory;
-import elemental.json.JsonObject;
-import elemental.json.impl.JreJsonFactory;
 
 public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
         implements HasSize, HasValidation, HasDataProvider<T>, HasHelper {
@@ -149,22 +148,21 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
         List<String> items = dataProvider.fetch(query)
                 .map(keyMapper::key).toList();
 
-        JsonFactory factory = new JreJsonFactory();
-        JsonArray jsonItems = factory.createArray();
-        int i = 0;
+        JsonNodeFactory factory = JsonNodeFactory.instance;
+        ArrayNode jsonItems = factory.arrayNode();
         for (String item : items) {
-            JsonObject object = factory.createObject();
+            ObjectNode object = factory.objectNode();
             object.put("key", item);
             object.put("label",
                     getItemLabelGenerator().apply(keyMapper.get(item)));
             dataGenerator.generateData(keyMapper.get(item), object);
-            jsonItems.set(i++, object);
+            jsonItems.add(object);
         }
         getElement().setPropertyJson("items", jsonItems);
 
         if (autoselect && dataProvider instanceof BackEndDataProvider && items.size() == 1) {
             // if there is only one item, we can set the value directly
-            String key = items.get(0);
+            String key = items.getFirst();
             T item = keyMapper.get(key);
             if (item != null) {
                 setModelValue(item, true);

@@ -3,3 +3,5 @@
 /target/
 /src/main/frontend/index.html
 /src/main/frontend/generated/
+/vite.config.ts
+/vite.generated.ts

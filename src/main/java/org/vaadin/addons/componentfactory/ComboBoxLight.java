@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.DetachEvent;
@@ -14,7 +16,6 @@ import com.vaadin.flow.component.HasSize;
 import com.vaadin.flow.component.HasValidation;
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.combobox.ComboBoxBase;
 import com.vaadin.flow.data.binder.HasDataProvider;
 import com.vaadin.flow.data.provider.CompositeDataGenerator;
 import com.vaadin.flow.data.provider.DataKeyMapper;
@@ -24,11 +25,6 @@ import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.function.SerializableConsumer;
 import com.vaadin.flow.shared.Registration;
-
-import elemental.json.JsonArray;
-import elemental.json.JsonFactory;
-import elemental.json.JsonObject;
-import elemental.json.impl.JreJsonFactory;
 
 public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
         implements HasSize, HasValidation, HasDataProvider<T>, HasHelper {
@@ -118,16 +114,15 @@ public class ComboBoxLight<T> extends AbstractComboBox<ComboBoxLight<T>, T>
         List<String> items = getDataProvider().fetch(new Query<>())
                 .map(item -> keyMapper.key(item)).collect(Collectors.toList());
 
-        JsonFactory factory = new JreJsonFactory();
-        JsonArray jsonItems = factory.createArray();
-        int i = 0;
+        JsonNodeFactory factory = JsonNodeFactory.instance;
+        ArrayNode jsonItems = factory.arrayNode();
         for (String item : items) {
-            JsonObject object = factory.createObject();
+            ObjectNode object = factory.objectNode();
             object.put("key", item);
             object.put("label",
                     getItemLabelGenerator().apply(keyMapper.get(item)));
             dataGenerator.generateData(keyMapper.get(item), object);
-            jsonItems.set(i++, object);
+            jsonItems.add(object);
         }
         getElement().setPropertyJson("items", jsonItems);
     }

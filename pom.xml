@@ -6,15 +6,15 @@
 
     <groupId>org.vaadin.addons.componentfactory</groupId>
     <artifactId>combo-box-light</artifactId>
-    <version>2.3.0</version>
+    <version>3.0.0-SNAPSHOT</version>
     <name>Light ComboBox</name>
     <description>Light ComboBox</description>
 
     <properties>
-        <vaadin.version>24.4.12</vaadin.version>
+        <vaadin.version>25.0.0-alpha11</vaadin.version>
 
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8
         </project.reporting.outputEncoding>
@@ -165,9 +165,9 @@
                 <defaultGoal>jetty:run</defaultGoal>
                 <plugins>
                     <plugin>
-                        <groupId>org.eclipse.jetty.ee10</groupId>
-                        <artifactId>jetty-ee10-maven-plugin</artifactId>
-                        <version>12.0.13</version>
+                        <groupId>org.eclipse.jetty.ee11</groupId>
+                        <artifactId>jetty-ee11-maven-plugin</artifactId>
+                        <version>12.1.1</version>
                         <configuration>
                             <!-- Use test scope because the UI/test classes are in
                                 the test package. -->
